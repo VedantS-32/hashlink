@@ -77,7 +77,7 @@ HL_PRIM vprocess *hl_process_run( vbyte *cmd, varray *vargs, bool detached ) {
 	vprocess *p;
 #	ifdef HL_WIN
 	SECURITY_ATTRIBUTES sattr;
-	STARTUPINFO sinf;
+	STARTUPINFOW sinf; // <-- Use the wide version
 	HANDLE proc = GetCurrentProcess();
 	HANDLE oread,eread,iwrite;
 	if( vargs )
@@ -88,7 +88,7 @@ HL_PRIM vprocess *hl_process_run( vbyte *cmd, varray *vargs, bool detached ) {
 	sattr.nLength = sizeof(sattr);
 	sattr.bInheritHandle = detached ? FALSE : TRUE;
 	sattr.lpSecurityDescriptor = NULL;
-	memset(&sinf,0,sizeof(sinf));
+	ZeroMemory(&sinf, sizeof(sinf));
 	sinf.cb = sizeof(sinf);
 	sinf.dwFlags = detached ? 0 : STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
 	sinf.wShowWindow = SW_HIDE;
@@ -107,7 +107,7 @@ HL_PRIM vprocess *hl_process_run( vbyte *cmd, varray *vargs, bool detached ) {
 		p->eread = NULL;
 		p->iwrite = NULL;
 	}
-	if( !CreateProcess(NULL,(uchar*)cmd,NULL,NULL,detached?FALSE:TRUE,detached?CREATE_NEW_CONSOLE:0,NULL,NULL,&sinf,&p->pinf) ) {
+	if( !CreateProcessW(NULL, (wchar_t*)cmd, NULL, NULL, detached ? FALSE : TRUE, detached ? CREATE_NEW_CONSOLE : 0, NULL, NULL, &sinf, &p->pinf) ) {
 		// handles will be finalized
 		return NULL;
 	}

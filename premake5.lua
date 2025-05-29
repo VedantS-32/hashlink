@@ -94,7 +94,7 @@ project "libhl"
 
     filter "system:windows"
         defines {"_USRDLL", "HAVE_CONFIG_H", "PCRE2_CODE_UNIT_WIDTH=16"}
-        links {"ws2_32.lib"}
+        links {"ws2_32"}
 
     filter {"system:not windows"}
         defines {"HAVE_CONFIG_H", "PCRE2_CODE_UNIT_WIDTH=16"}

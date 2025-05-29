@@ -934,6 +934,8 @@ typedef struct tagTHREADNAME_INFO
     DWORD dwFlags; // Reserved for future use, must be zero.
 } THREADNAME_INFO;
 #pragma pack(pop)
+
+#ifdef _MSC_VER
 void SetThreadName(DWORD dwThreadID, const char* threadName) {
     THREADNAME_INFO info;
     info.dwType = 0x1000;
@@ -949,6 +951,12 @@ void SetThreadName(DWORD dwThreadID, const char* threadName) {
     }
 #pragma warning(pop)
 }
+#else
+void SetThreadName(DWORD dwThreadID, const char* threadName) {
+    // Not supported on this compiler
+}
+#endif
+
 #endif
 
 HL_PRIM int hl_get_thread_id( hl_thread *t ) {

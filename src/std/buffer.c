@@ -380,7 +380,7 @@ static void hl_buffer_rec( hl_buffer *b, vdynamic *v, vlist *stack ) {
 				vtmp = vtmp->next;
 			}
 			l.v = v;
-			l.next = stack;
+		 l.next = stack;
 			hl_buffer_str(b, c->name);
 			hl_buffer_char(b,'(');
 			for(i=0;i<c->nparams;i++) {
@@ -397,7 +397,8 @@ static void hl_buffer_rec( hl_buffer *b, vdynamic *v, vlist *stack ) {
 		hl_buffer_str(b,hl_guid_str(v->v.i64,buf));
 		break;
 	default:
-		hl_buffer_str_sub(b, buf, usprintf(buf, 32, _PTR_FMT USTR("H"),(int_val)v));
+		hl_buffer_str_sub(b, buf, usprintf(buf, 32, _PTR_FMT, (int_val)v));
+		hl_buffer_str_sub(b, USTR("H"), 1);
 		break;
 	}
 }

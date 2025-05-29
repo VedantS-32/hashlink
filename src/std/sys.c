@@ -45,8 +45,13 @@
 #	define getcwd(buf,size) (void*)(int_val)GetCurrentDirectoryW(size,buf)
 #	define chdir	!SetCurrentDirectoryW
 #	define system	_wsystem
-typedef struct _stat32 pstat;
-#	define stat		_wstat32
+#   if defined(__MINGW32__) || defined(__MINGW64__)
+        typedef struct _stat64i32 pstat;
+        #define stat    _wstat64i32
+#   else
+        typedef struct _stat32 pstat;
+        #define stat    _wstat32
+#   endif
 #	define unlink	_wunlink
 #	define rename	_wrename
 #	define mkdir(path,mode)	_wmkdir(path)
@@ -63,6 +68,10 @@ typedef struct _stat32 pstat;
 #	include <locale.h>
 #	define HL_UTF8PATH
 typedef struct stat pstat;
+#endif
+
+#if defined(_WIN32) && defined(__GNUC__)
+#define _wstat32 _wstat
 #endif
 
 #endif
@@ -542,7 +551,7 @@ HL_PRIM vbyte *hl_sys_full_path( vbyte *path ) {
 	pchar out[MAX_PATH+1];
 	int len, i, last;
 	HANDLE handle;
-	WIN32_FIND_DATA data;
+	WIN32_FIND_DATAW data; // <-- Use the wide version
 	const char sep = '\\';
 	if( GetFullPathNameW((pchar*)path,MAX_PATH+1,out,NULL) == 0 )
 		return NULL;
